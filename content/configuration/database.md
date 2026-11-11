@@ -34,3 +34,16 @@ This includes:
 **Note**  
 `DB_SSL__CA_FILE` may be preferred to load the CA directly from a file.
 ::
+
+## Managed PostgreSQL
+
+Managed PostgreSQL providers usually give you a connection string. Set it as `DB_CONNECTION_STRING` instead of the individual `DB_HOST`, `DB_PORT`, `DB_DATABASE`, `DB_USER`, and `DB_PASSWORD` variables:
+
+```
+DB_CLIENT="pg"
+DB_CONNECTION_STRING="postgres://user:password@db.example.com:5432/postgres?sslmode=require"
+```
+
+- **SSL**: `sslmode=require` in the connection string turns on SSL, and the PostgreSQL driver verifies the server certificate against the Node.js trust store. You only need the `DB_SSL__` options when the provider signs its certificates with its own CA.
+- **Pool size**: Each Directus process opens up to 10 database connections by default. Set `DB_POOL__MAX` to stay within the connection limit of your database plan, and count every Directus process that connects to the same database.
+- **Connection poolers**: Some providers offer a pooled connection string next to the direct one. For example, with [Prisma Postgres](https://www.prisma.io/postgres?utm_source=directus&utm_medium=docs&utm_campaign=directus_database_configuration), which pools connections with PgBouncer in transaction mode, Directus installs its system tables, runs its migrations, and serves requests with either connection string.
